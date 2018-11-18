@@ -165,7 +165,7 @@ class Logger {
 	private function file (string $level, $content, string $now) {
 		//try {
 			$parsed_content = json_encode($content, JSON_NUMERIC_CHECK);
-			file_put_contents($this->configs['filePath'], "[{$now}] {$level}: {$parsed_content}" . PHP_EOL);
+			$result = file_put_contents($this->configs['filePath'], "[{$now}] {$level}: {$parsed_content}" . PHP_EOL, FILE_APPEND);
 		//} catch (Exception $e){
 		//	console.log("[{$now}] FILE HANDLER ERROR: {$e}");
 		//}
@@ -224,11 +224,11 @@ class Logger {
 			$mail->Subject = 'Here is the subject';
 			//$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
 			$mail->AltBody = '--------------------------- INFO -------------------------------' . PHP_EOL
-				. $now
+				. $now . PHP_EOL
 				. '---------------------------- HOST ------------------------------' . PHP_EOL
-				. json_encode($hostInfo, JSON_NUMERIC_CHECK)
+				. json_encode($hostInfo, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL
 				. '---------------------------- ERROR ------------------------------' . PHP_EOL
-				. json_encode($content, JSON_NUMERIC_CHECK);
+				. json_encode($content, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL;
 
 			$mail->send();
 			//echo 'Message has been sent';
