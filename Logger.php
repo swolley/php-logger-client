@@ -4,8 +4,8 @@ namespace Libs;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-//require './vendor/autoload.php';
-//require './php-curl/CurlExtended.php';
+require './vendor/autoload.php';
+require './php-curl/CurlExtended.php';
 
 //logger handlers
 define('FILE', 1 << 0);
