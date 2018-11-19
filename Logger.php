@@ -1,9 +1,11 @@
 <?php
+namespace Libs;
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require './vendor/autoload.php';
-require './php-logger/CurlExtended.php';
+//require './vendor/autoload.php';
+//require './php-curl/CurlExtended.php';
 
 //logger handlers
 define('FILE', 1 << 0);
@@ -16,21 +18,31 @@ define('WARN', 'WARN');
 define('ERROR', 'ERROR');
 
 class Logger {
+	public function __construct(){
+		error_reporting(E_ALL | E_STRICT);
+		ini_set('display_errors', false);
+		ini_set('log_errors', true);
+		ini_set('error_log', './php_errors.log');
+		ini_set('ignore_repeated_errors', true);
+		ini_set('ignore_repeated_source', false);
+	}
+
 	/**
 	 * main configs
 	 */
 	private $configs = [
 		'filePath' => null,
 		'httpOptions' => null,
-		'emailOptions' => null
+		'emailOptions' => null,
+		'autoTrigger' => 0
 	];
 
 	/**
 	 * register handler's parameters
-	 * @param integer $handler choosen LogHandler
+	 * @param int $handler choosen LogHandler
 	 * @param mixed $configs file path
 	 */
-	public function register (integer $handler, $configs) {
+	public function register (int $handler, $configs) {
 		switch ($handler) {
 			case FILE:
 				$this->setFile($configs);
@@ -45,6 +57,30 @@ class Logger {
 				break;
 		}
 	}
+
+	/**
+	 * sets php set_error_handler function to log automatically errors
+	 * @param int $handlers choosen handlers for autotriggering logs
+	 */
+	public function enableAutoTrigger (int $handlers) {
+		$this->configs['autoTrigger'] = $handlers;
+
+		set_error_handler(function($errno, $errstr, $errfile, $errline/*, $backtrace*/){
+			$content = [
+				'message' => $errstr . ' in ' . $errfile . ' on line ' . $errline
+			];
+
+			$this->create(intl_error_name($errno), $content, $this->configs['autoTrigger']);
+		});
+	}
+
+	/**
+	 * restore php default set_error_handler function
+	 */
+	public function disableAutoTrigger () {
+		$this->configs['autoTrigger'] = 0;
+		restore_error_handler();
+	}
 	
 	/**
 	 * Logger main method
@@ -54,7 +90,7 @@ class Logger {
 	 */
 	public function create (string $level, $content, int $mode = 0) {
 		$now = date(DATE_RSS);
-		
+
 		$local_host = [
 			'hostname' => $_SERVER['SERVER_NAME'],
 			'platform' => $_SERVER['HTTP_USER_AGENT'],
@@ -62,9 +98,6 @@ class Logger {
 			'userInfo' => posix_getpwuid(posix_geteuid())['name'],
 			'networkInterfaces' => $_SERVER['SERVER_ADDR']
 		];
-
-		//always logs in console
-		//console.log('[' + now + '] ' + level.toUpperCase() + ': ' + content + '\n');
 	
 		if ($mode & FILE && $this->configs['filePath']) { 
 			$this->file($level, $content, $now);
@@ -186,7 +219,8 @@ class Logger {
 				'datetime' => $now,
 				'level' => $level,
 				'content' => $content,
-				'host' => $hostInfo
+				'host' => $hostInfo,
+				'backtrace' => debug_backtrace()
 			]
 		);
 	}
@@ -228,7 +262,9 @@ class Logger {
 				. '---------------------------- HOST ------------------------------' . PHP_EOL
 				. json_encode($hostInfo, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL
 				. '---------------------------- ERROR ------------------------------' . PHP_EOL
-				. json_encode($content, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL;
+				. json_encode($content, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL
+				. '---------------------------- BACKTRACE ------------------------------' . PHP_EOL
+				. json_encode(debug_backtrace(), JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT);
 
 			$mail->send();
 			//echo 'Message has been sent';
