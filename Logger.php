@@ -196,12 +196,12 @@ class Logger {
 	 * @param string $now datetime to locale string
 	 */
 	private function file (string $level, $content, string $now) {
-		//try {
-			$parsed_content = json_encode($content, JSON_NUMERIC_CHECK);
-			$result = file_put_contents($this->configs['filePath'], "[{$now}] {$level}: {$parsed_content}" . PHP_EOL, FILE_APPEND);
-		//} catch (Exception $e){
-		//	console.log("[{$now}] FILE HANDLER ERROR: {$e}");
-		//}
+		if(!$this->configs['filePath']){
+			return false;
+		}
+
+		$parsed_content = json_encode($content, JSON_NUMERIC_CHECK);
+		$result = file_put_contents($this->configs['filePath'], "[{$now}] {$level}: {$parsed_content}" . PHP_EOL, FILE_APPEND);
 	}
 
 	/**
@@ -212,6 +212,10 @@ class Logger {
 	 * @param array $hostInfo local host info
 	 */
 	private function http (string $level, $content, string $now, array $hostInfo) {
+		if(!$this->configs['httpOptions']){
+			return false;
+		}
+
 		$curl = new CurlExtended();
 		$response = $curl->postData(
 			"{$this->configs['httpOptions']['host']}:{$this->configs['httpOptions']['port']}{$this->configs['httpOptions']['path']}",
@@ -233,6 +237,10 @@ class Logger {
 	 * @param array $hostInfo local host info
 	 */
 	private function email (string $level, $content, string $now, array $hostInfo) { 
+		if(!$this->configs['emailOptions']){
+			return false;
+		}
+		
 		$mail = new PHPMailer(true);                              		// Passing `true` enables exceptions
 		//try {
 			//Server settings
