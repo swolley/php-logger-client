@@ -89,7 +89,7 @@ class Logger {
 	 * @param int $mode type of log method
 	 */
 	public function create (string $level, $content, int $mode = 0) {
-		$now = date(DATE_RSS);
+		$now = (new \DateTime())->format('d-m-Y, H:i:s');
 
 		$local_host = [
 			'hostname' => $_SERVER['SERVER_NAME'],
