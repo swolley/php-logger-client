@@ -1,11 +1,12 @@
 <?php
-namespace Libs;
+namespace Logger;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+use Curl\CurlExtended;
+
 require './vendor/autoload.php';
-require './php-curl/CurlExtended.php';
 
 //logger handlers
 define('FILE', 1 << 0);

@@ -1,3 +1,6 @@
 [submodule "php-curl"]
 	path = php-curl
 	url = pi@192.168.1.8:/mnt/gitdrv/php-curl.git
+[submodule "php-curl-extended"]
+	path = php-curl-extended
+	url = pi@192.168.1.8:/mnt/gitdrv/php-curl-extended.git
