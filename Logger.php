@@ -19,7 +19,11 @@ define('WARN', 'WARN');
 define('ERROR', 'ERROR');
 
 class Logger {
-	public function __construct(){
+	private $projectId;
+
+	public function __construct($projectId = null){
+		$this->projectId = $project;
+
 		error_reporting(E_ALL | E_STRICT);
 		ini_set('display_errors', false);
 		ini_set('log_errors', true);
@@ -222,6 +226,7 @@ class Logger {
 			"{$this->configs['httpOptions']['host']}:{$this->configs['httpOptions']['port']}{$this->configs['httpOptions']['path']}",
 			[
 				'datetime' => $now,
+				'projectId' => $this->projectId,
 				'level' => $level,
 				'content' => $content,
 				'host' => $hostInfo,
@@ -264,10 +269,11 @@ class Logger {
 
 			//Content
 			$mail->isHTML(false);                                  // Set email format to HTML
-			$mail->Subject = 'Here is the subject';
+			$mail->Subject = $this->projectId? $this->projectId . ' ' :'' . 'Message from Logger';
 			//$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
 			$mail->AltBody = '--------------------------- INFO -------------------------------' . PHP_EOL
-				. $now . PHP_EOL
+				. "datetime:\t" . $now . PHP_EOL
+				. "projectId:\t" . $this->projectId . PHP_EOL
 				. '---------------------------- HOST ------------------------------' . PHP_EOL
 				. json_encode($hostInfo, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL
 				. '---------------------------- ERROR ------------------------------' . PHP_EOL
