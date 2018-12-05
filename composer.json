@@ -1,8 +1,10 @@
 {
-    "name": "swolley/php-logger",
+    "name": "swolley/php-logger-client",
     "type": "library",
+    "minimum-stability": "dev",
     "require": {
-        "phpmailer/phpmailer": "^6.0"
+        "phpmailer/phpmailer": "^6.0",
+        "swolley/php-curl-extended": "master"
     },
     "license": "MIT",
     "authors": [
@@ -10,5 +12,11 @@
             "name": "Swolley",
             "email": "myentity@inwind.it"
         }
-    ]
+    ],
+    "repositories": {
+        "swolley/php-curl-extended": {
+            "type": "vcs",
+            "url": "https://github.com/swolley/php-curl-extended.git"
+        }
+    }
 }
