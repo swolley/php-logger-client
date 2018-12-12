@@ -22,7 +22,7 @@ class Logger {
 	private $projectId;
 
 	public function __construct($projectId = null){
-		$this->projectId = $project;
+		$this->projectId = $projectId;
 
 		error_reporting(E_ALL | E_STRICT);
 		ini_set('display_errors', false);
