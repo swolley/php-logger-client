@@ -1,10 +1,10 @@
 <?php
-namespace Logger;
+namespace Swolley\Logger;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-use Curl\CurlExtended;
+use Swolley\Curl\CurlExtended;
 
 require './vendor/autoload.php';
 
