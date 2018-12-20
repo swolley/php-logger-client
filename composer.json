@@ -19,8 +19,8 @@
         }
     },
     "autoload": {
-        "psr-0": {
-            "\\Swolley\\Logger\\": "/"
+        "psr-4": {
+            "Swolley\\Logger\\": "/"
         }
     }
 }
