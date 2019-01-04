@@ -103,15 +103,15 @@ class Logger {
 			'networkInterfaces' => @$_SERVER['SERVER_ADDR']
 		];
 	
-		if ($mode & self::FILE && $this->configs['filePath']) { 
+		if ($mode & FILE && $this->configs['filePath']) { 
 			$this->file($level, $content, $now);
 		}
 	
-		if ($mode & self::EMAIL && $this->configs['emailOptions']) { 
+		if ($mode & EMAIL && $this->configs['emailOptions']) { 
 			$this->email($level, $content, $now, $local_host);
 		}
 	
-		if ($mode & self::HTTP && $this->configs['httpOptions']) {
+		if ($mode & HTTP && $this->configs['httpOptions']) {
 			$this->http($level, $content, $now, $local_host);
 		}
 	}
