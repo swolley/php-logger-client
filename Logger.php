@@ -8,16 +8,16 @@ use Swolley\Curl\CurlExtended;
 
 require './vendor/autoload.php';
 
-class Logger {
-	//logger handlers
-	const FILE = 1 << 0;
-	const EMAIL = 1 << 1;
-	const HTTP = 1 << 2;
-	//logger levels
-	const INFO = 'INFO';
-	const WARN = 'WARN';
-	const ERROR = 'ERROR';
+//logger handlers
+define('FILE', 1 << 0);
+define('EMAIL', 1 << 1);
+define('HTTP', 1 << 2);
+//logger levels
+define('INFO', 'INFO');
+define('WARN', 'WARN');
+define('ERROR', 'ERROR');
 
+class Logger {
 	private $projectId;
 
 	public function __construct($projectId = null){
@@ -48,15 +48,15 @@ class Logger {
 	 */
 	public function register (int $handler, $configs) {
 		switch ($handler) {
-			case self::FILE:
+			case FILE:
 				$this->setFile($configs);
 				break;
 			
-			case self::HTTP:
+			case HTTP:
 				$this->setHttp($configs);
 				break;
 			
-			case self::EMAIL:
+			case EMAIL:
 				$this->setEmail($configs);
 				break;
 		}
