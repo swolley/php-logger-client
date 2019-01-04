@@ -8,28 +8,27 @@ use Swolley\Curl\CurlExtended;
 
 require './vendor/autoload.php';
 
-//logger handlers
-define('FILE', 1 << 0);
-define('EMAIL', 1 << 1);
-define('HTTP', 1 << 2);
-
-//logger levels
-define('INFO', 'INFO');
-define('WARN', 'WARN');
-define('ERROR', 'ERROR');
-
 class Logger {
+	//logger handlers
+	const FILE = 1 << 0;
+	const EMAIL = 1 << 1;
+	const HTTP = 1 << 2;
+	//logger levels
+	const INFO = 'INFO';
+	const WARN = 'WARN';
+	const ERROR = 'ERROR';
+
 	private $projectId;
 
 	public function __construct($projectId = null){
 		$this->projectId = $projectId;
 
-		error_reporting(E_ALL | E_STRICT);
-		ini_set('display_errors', false);
-		ini_set('log_errors', true);
-		ini_set('error_log', './php_errors.log');
-		ini_set('ignore_repeated_errors', true);
-		ini_set('ignore_repeated_source', false);
+		//error_reporting(E_ALL | E_STRICT);
+		//ini_set('display_errors', false);
+		//ini_set('log_errors', true);
+		//ini_set('error_log', './php_errors.log');
+		//ini_set('ignore_repeated_errors', true);
+		//ini_set('ignore_repeated_source', false);
 	}
 
 	/**
@@ -49,15 +48,15 @@ class Logger {
 	 */
 	public function register (int $handler, $configs) {
 		switch ($handler) {
-			case FILE:
+			case self::FILE:
 				$this->setFile($configs);
 				break;
 			
-			case HTTP:
+			case self::HTTP:
 				$this->setHttp($configs);
 				break;
 			
-			case EMAIL:
+			case self::EMAIL:
 				$this->setEmail($configs);
 				break;
 		}
@@ -97,22 +96,22 @@ class Logger {
 		$now = (new \DateTime())->format('d-m-Y, H:i:s');
 
 		$local_host = [
-			'hostname' => $_SERVER['SERVER_NAME'],
-			'platform' => $_SERVER['HTTP_USER_AGENT'],
-			'release' => php_uname('a'),
-			'userInfo' => posix_getpwuid(posix_geteuid())['name'],
-			'networkInterfaces' => $_SERVER['SERVER_ADDR']
+			'hostname' => @$_SERVER['SERVER_NAME'],
+			'platform' => @$_SERVER['HTTP_USER_AGENT'],
+			'release' => @php_uname('a'),
+			'userInfo' => @posix_getpwuid(posix_geteuid())['name'],
+			'networkInterfaces' => @$_SERVER['SERVER_ADDR']
 		];
 	
-		if ($mode & FILE && $this->configs['filePath']) { 
+		if ($mode & self::FILE && $this->configs['filePath']) { 
 			$this->file($level, $content, $now);
 		}
 	
-		if ($mode & EMAIL && $this->configs['emailOptions']) { 
+		if ($mode & self::EMAIL && $this->configs['emailOptions']) { 
 			$this->email($level, $content, $now, $local_host);
 		}
 	
-		if ($mode & HTTP && $this->configs['httpOptions']) {
+		if ($mode & self::HTTP && $this->configs['httpOptions']) {
 			$this->http($level, $content, $now, $local_host);
 		}
 	}
