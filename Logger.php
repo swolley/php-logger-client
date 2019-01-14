@@ -6,8 +6,6 @@ use PHPMailer\PHPMailer\Exception;
 
 use Swolley\Curl\CurlExtended;
 
-require './vendor/autoload.php';
-
 //logger handlers
 define('FILE', 1 << 0);
 define('EMAIL', 1 << 1);
