@@ -202,8 +202,8 @@ class Logger {
 			return false;
 		}
 
-		$parsed_content = json_encode($content, JSON_NUMERIC_CHECK);
-		$result = file_put_contents($this->configs['filePath'], "[{$now}] {$level}: {$parsed_content}" . PHP_EOL, FILE_APPEND);
+		$parsed_content = @json_encode($content, JSON_NUMERIC_CHECK);
+		$result = @file_put_contents($this->configs['filePath'], "[{$now}] {$level}: {$parsed_content}" . PHP_EOL, FILE_APPEND);
 	}
 
 	/**
@@ -227,7 +227,7 @@ class Logger {
 				'level' => $level,
 				'content' => $content,
 				'host' => $hostInfo,
-				'backtrace' => debug_backtrace()
+				'backtrace' => @debug_backtrace()
 			]
 		);
 	}
@@ -244,39 +244,39 @@ class Logger {
 			return false;
 		}
 		
-		$mail = new PHPMailer(true);                              		// Passing `true` enables exceptions
+		$mail = new PHPMailer(true);                              		    // Passing `true` enables exceptions
 		//try {
 			//Server settings
-			$mail->SMTPDebug = 0;                                 		// Enable verbose debug output
-			$mail->isSMTP();                                      		// Set mailer to use SMTP
-			$mail->Host = $this->configs['emailOptions']['host']; 		// Specify main and backup SMTP servers
-			$mail->SMTPAuth = true;                               		// Enable SMTP authentication
-			$mail->Username = $this->configs['emailOptions']['user'];	// SMTP username
-			$mail->Password = $this->configs['emailOptions']['pass'];	// SMTP password
-			$mail->SMTPSecure = 'tls';                            		// Enable TLS encryption, `ssl` also accepted
-			$mail->Port = $this->configs['emailOptions']['port'];  		// TCP port to connect to
+			$mail->SMTPDebug = 0;                                 		    // Enable verbose debug output
+			$mail->isSMTP();                                      		    // Set mailer to use SMTP
+			$mail->Host = $this->configs['emailOptions']['host']; 		    // Specify main and backup SMTP servers
+			$mail->SMTPAuth = true;                               		    // Enable SMTP authentication
+			$mail->Username = $this->configs['emailOptions']['user'];	    // SMTP username
+			$mail->Password = $this->configs['emailOptions']['pass'];	    // SMTP password
+			$mail->SMTPSecure = $this->configs['emailOptions']['secure'];   // Enable TLS encryption, `ssl` also accepted
+			$mail->Port = $this->configs['emailOptions']['port'];  		    // TCP port to connect to
 
 			//Recipients
 			$mail->setFrom($this->configs['emailOptions']['from']);
-			$mail->addAddress($this->configs['emailOptions']['to']);     // Add a recipient
+			$mail->addAddress($this->configs['emailOptions']['to']);        // Add a recipient
 
 			//Attachments
-			//$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-			//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+			//$mail->addAttachment('/var/tmp/file.tar.gz');                 // Add attachments
+			//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');            // Optional name
 
 			//Content
-			$mail->isHTML(false);                                  // Set email format to HTML
+			$mail->isHTML(false);                                           // Set email format to HTML
 			$mail->Subject = $this->projectId? $this->projectId . ' ' :'' . 'Message from Logger';
 			//$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
 			$mail->AltBody = '--------------------------- INFO -------------------------------' . PHP_EOL
 				. "datetime:\t" . $now . PHP_EOL
 				. "projectId:\t" . $this->projectId . PHP_EOL
 				. '---------------------------- HOST ------------------------------' . PHP_EOL
-				. json_encode($hostInfo, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL
+				. @json_encode($hostInfo, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL
 				. '---------------------------- ERROR ------------------------------' . PHP_EOL
-				. json_encode($content, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL
+				. @json_encode($content, JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT) . PHP_EOL
 				. '---------------------------- BACKTRACE ------------------------------' . PHP_EOL
-				. json_encode(debug_backtrace(), JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT);
+				. @json_encode(debug_backtrace(), JSON_NUMERIC_CHECK | JSON_PRETTY_PRINT);
 
 			$mail->send();
 			//echo 'Message has been sent';
