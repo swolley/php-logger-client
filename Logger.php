@@ -202,7 +202,7 @@ class Logger {
 			return false;
 		}
 
-		$parsed_content = @json_encode($content, JSON_NUMERIC_CHECK);
+		$parsed_content = @json_encode($content, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 		$result = @file_put_contents($this->configs['filePath'], "[{$now}] {$level}: {$parsed_content}" . PHP_EOL, FILE_APPEND);
 	}
 
